@@ -380,7 +380,7 @@ button:hover {
 }
 
 .lesson-card.is-open .lesson-body {
-  max-height: 3600px;
+  max-height: 7600px;
   padding: 0 18px 18px;
 }
 
@@ -397,6 +397,49 @@ button:hover {
   margin: 8px 0 0;
   color: var(--muted);
   line-height: 1.7;
+}
+
+.synopsis {
+  display: grid;
+  gap: 14px;
+}
+
+.synopsis > p {
+  max-width: 74ch;
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.synopsis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 10px;
+}
+
+.synopsis-note {
+  border: 1px solid rgba(217, 119, 6, 0.22);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(135deg, rgba(254, 240, 138, 0.34), transparent 72%),
+    var(--panel);
+  padding: 12px;
+}
+
+[data-theme="dark"] .synopsis-note {
+  border-color: rgba(251, 191, 36, 0.34);
+  background:
+    linear-gradient(135deg, rgba(251, 191, 36, 0.12), transparent 72%),
+    var(--panel);
+}
+
+.synopsis-note h4 {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.synopsis-note p {
+  margin-top: 7px;
+  font-size: 0.92rem;
 }
 
 .exercise-box,
@@ -480,6 +523,13 @@ button:hover {
   padding: 12px;
 }
 
+.exercise-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
 [data-theme="dark"] .exercise-item,
 [data-theme="dark"] .quiz-item {
   background: rgba(17, 24, 39, 0.45);
@@ -488,6 +538,58 @@ button:hover {
 .difficulty-badge {
   background: rgba(14, 159, 110, 0.14);
   color: var(--accent-2);
+}
+
+.editor-toggle {
+  border: 1px solid rgba(14, 159, 110, 0.34);
+  border-radius: var(--radius);
+  background: rgba(14, 159, 110, 0.1);
+  color: var(--accent-2);
+  cursor: pointer;
+  padding: 7px 10px;
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.code-editor-wrap {
+  max-height: 0;
+  margin-top: 0;
+  overflow: hidden;
+  transition: max-height 220ms ease, margin-top 220ms ease;
+}
+
+.code-editor-wrap.is-open {
+  max-height: 260px;
+  margin-top: 12px;
+}
+
+.editor-label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.code-editor {
+  width: 100%;
+  min-height: 140px;
+  resize: vertical;
+  border: 1px solid rgba(14, 159, 110, 0.28);
+  border-radius: var(--radius);
+  background: var(--code-bg);
+  color: var(--code-text);
+  padding: 12px;
+  font-family: "Cascadia Code", Consolas, Monaco, monospace;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  outline: none;
+}
+
+.code-editor:focus {
+  border-color: var(--accent-2);
+  box-shadow: 0 0 0 3px rgba(14, 159, 110, 0.18);
 }
 
 .quiz-level {

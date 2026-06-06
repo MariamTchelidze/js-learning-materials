@@ -2,7 +2,8 @@ const STORAGE_KEYS = {
   theme: "jsHubTheme",
   completed: "jsHubCompletedLessons",
   quizzes: "jsHubQuizAnswers",
-  filter: "jsHubLevelFilter"
+  filter: "jsHubLevelFilter",
+  exerciseDrafts: "jsHubExerciseDrafts"
 };
 
 const lessons = [
@@ -599,6 +600,7 @@ const levelTabs = document.querySelectorAll(".level-tab");
 
 let completedLessons = readStorage(STORAGE_KEYS.completed, []);
 let quizAnswers = readStorage(STORAGE_KEYS.quizzes, {});
+let exerciseDrafts = readStorage(STORAGE_KEYS.exerciseDrafts, {});
 let activeLevel = localStorage.getItem(STORAGE_KEYS.filter) || "all";
 
 init();
@@ -637,6 +639,7 @@ function bindEvents() {
     const copyButton = event.target.closest("[data-copy]");
     const completeButton = event.target.closest("[data-complete]");
     const quizButton = event.target.closest("[data-quiz-option]");
+    const editorToggle = event.target.closest("[data-editor-toggle]");
 
     if (expandButton) {
       const card = expandButton.closest(".lesson-card");
@@ -656,6 +659,18 @@ function bindEvents() {
     if (quizButton) {
       answerQuiz(quizButton);
     }
+
+    if (editorToggle) {
+      toggleExerciseEditor(editorToggle);
+    }
+  });
+
+  courseContent.addEventListener("input", event => {
+    const editor = event.target.closest("[data-exercise-editor]");
+    if (!editor) return;
+
+    exerciseDrafts[editor.dataset.exerciseEditor] = editor.value;
+    localStorage.setItem(STORAGE_KEYS.exerciseDrafts, JSON.stringify(exerciseDrafts));
   });
 }
 
@@ -682,7 +697,7 @@ function renderLessons() {
         <div class="lesson-body">
           <section class="theory" aria-labelledby="${lesson.id}-theory">
             <h3 id="${lesson.id}-theory">Theory</h3>
-            <p>${lesson.theory}</p>
+            ${renderTheorySynopsis(lesson)}
           </section>
 
           <div class="code-panel">
@@ -702,12 +717,26 @@ function renderLessons() {
               <span class="section-count">${exercises.length} levels</span>
             </div>
             <div class="exercise-list">
-              ${exercises.map(item => `
+              ${exercises.map((item, exerciseIndex) => {
+                const editorId = `${lesson.id}-${exerciseIndex}`;
+                const savedDraft = exerciseDrafts[editorId] || "";
+                const hasDraft = savedDraft.trim().length > 0;
+                return `
                 <article class="exercise-item">
-                  <div class="difficulty-badge">${item.level}</div>
+                  <div class="exercise-item-header">
+                    <div class="difficulty-badge">${item.level}</div>
+                    <button class="editor-toggle" type="button" data-editor-toggle="${editorId}" aria-expanded="${hasDraft ? "true" : "false"}">
+                      ${hasDraft ? "Hide editor" : "Write code here"}
+                    </button>
+                  </div>
                   <p>${item.prompt}</p>
+                  <div class="code-editor-wrap ${hasDraft ? "is-open" : ""}" data-editor-wrap="${editorId}">
+                    <label class="editor-label" for="editor-${editorId}">Your JavaScript notebook</label>
+                    <textarea id="editor-${editorId}" class="code-editor" data-exercise-editor="${editorId}" spellcheck="false" placeholder="// Write your JavaScript solution here">${escapeHtml(savedDraft)}</textarea>
+                  </div>
                 </article>
-              `).join("")}
+                `;
+              }).join("")}
             </div>
           </section>
 
@@ -752,6 +781,48 @@ function renderLessons() {
       </article>
     `;
   }).join("");
+}
+
+function renderTheorySynopsis(lesson) {
+  const notes = buildTheorySynopsis(lesson);
+  return `
+    <div class="synopsis">
+      <p>${lesson.theory}</p>
+      <div class="synopsis-grid">
+        ${notes.map(note => `
+          <article class="synopsis-note">
+            <h4>${note.title}</h4>
+            <p>${note.text}</p>
+          </article>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function buildTheorySynopsis(lesson) {
+  return [
+    {
+      title: "In simple words",
+      text: `${lesson.title} is one small tool in the JavaScript toolbox. Learn what value it works with, what result it creates, and when you would reach for it while building an interface.`
+    },
+    {
+      title: "Why it matters",
+      text: `You will meet this idea in real code when reading examples, fixing bugs, or building small app features. It helps you move from memorizing syntax to understanding behavior.`
+    },
+    {
+      title: "How to study it",
+      text: `Read the example slowly, rename the variables, change one value, and predict the output before running it. Prediction is where the learning starts to stick.`
+    },
+    {
+      title: "Common beginner trap",
+      text: `Do not only copy the final code. Ask what each line knows, what it changes, and which line depends on the previous one. JavaScript rewards careful order.`
+    },
+    {
+      title: "Notebook reminder",
+      text: `Keep a tiny example for ${lesson.title}, one sentence explaining it, and one mistake you made while practicing. That becomes your personal quick-reference page.`
+    }
+  ];
 }
 
 function buildExerciseSet(lesson) {
@@ -936,6 +1007,21 @@ function fallbackCopy(text) {
   textarea.select();
   document.execCommand("copy");
   textarea.remove();
+}
+
+function toggleExerciseEditor(button) {
+  const id = button.dataset.editorToggle;
+  const editorWrap = document.querySelector(`[data-editor-wrap="${id}"]`);
+  if (!editorWrap) return;
+
+  const isOpen = editorWrap.classList.toggle("is-open");
+  button.setAttribute("aria-expanded", String(isOpen));
+  button.textContent = isOpen ? "Hide editor" : "Write code here";
+
+  if (isOpen) {
+    const editor = editorWrap.querySelector(".code-editor");
+    editor.focus();
+  }
 }
 
 function answerQuiz(button) {
