@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Learning Hub</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar sidebar-left" aria-label="Topic navigation">
+      <div class="brand">
+        <div class="brand-mark">JS</div>
+        <div>
+          <strong>Learning Hub</strong>
+          <span>19 week roadmap</span>
+        </div>
+      </div>
+
+      <label class="search-box" for="lessonSearch">
+        <span>Search</span>
+        <input id="lessonSearch" type="search" placeholder="Topic, method, concept">
+      </label>
+
+      <nav id="topicNav" class="nav-list"></nav>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">JavaScript in Action</p>
+          <h1>Learn theory, then jump straight into practice.</h1>
+        </div>
+
+        <div class="top-actions">
+          <div class="progress-card" aria-label="Course progress">
+            <span id="progressText">0% complete</span>
+            <div class="progress-track">
+              <div id="progressFill" class="progress-fill"></div>
+            </div>
+          </div>
+          <button id="themeToggle" class="icon-button" type="button" aria-label="Toggle dark mode">D</button>
+        </div>
+      </header>
+
+      <section class="level-tabs" aria-label="Level filters">
+        <button class="level-tab is-active" type="button" data-level="all">All</button>
+        <button class="level-tab" type="button" data-level="Level 1">Level 1</button>
+        <button class="level-tab" type="button" data-level="Level 2">Level 2</button>
+        <button class="level-tab" type="button" data-level="Level 3">Level 3</button>
+      </section>
+
+      <section id="courseContent" class="lesson-stack" aria-live="polite"></section>
+    </main>
+
+    <aside class="sidebar sidebar-right" aria-label="Exercise navigation">
+      <div class="side-heading">
+        <p class="eyebrow">Practice</p>
+        <h2>Exercises</h2>
+      </div>
+      <nav id="exerciseNav" class="nav-list compact"></nav>
+    </aside>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
