@@ -191,6 +191,9 @@ Your support helps motivate me to continue learning and sharing my progress.
 Frontend Development Student | JavaScript Learner 🚀
 
 [GitHub:](https://github.com/MariamTchelidze)
+
+---
+
 [Demo:](https://mariamtchelidze.github.io/js-learning-materials/)
 
 ---
